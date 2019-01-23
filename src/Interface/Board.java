@@ -265,6 +265,7 @@ public class Board extends JPanel implements FocusListener { private static fina
 			int endFile = screenXtofile(arg0.getX());
 			int endRank = screenYtoRank(arg0.getY());
 			dragging = false;
+			Piece pc = parent.getCurrentPosition().getPiece(oFile, oRank);
 			
 			for (boolean[] a: highlights)
 				Arrays.fill(a, false);
@@ -281,13 +282,21 @@ public class Board extends JPanel implements FocusListener { private static fina
 				}
 			}
 			
+			//if its not human's turn to play, disregard dragged moves
+			if ((pc.isWhite && parent.getMode() == MainFrame.CvH ) ||
+				(!pc.isWhite && parent.getMode() == MainFrame.HvC ) || 
+				parent.getMode() == MainFrame.CvC) {
+				repaint();
+				return;
+			}
+				
+			
 			if (endFile > 7 || endFile < 0) isLegal = false;
 			if (endRank > 7 || endRank < 0) isLegal = false;
 			if (endRank == oRank && endFile == oFile) isLegal = false;
 			
 			if (isLegal) {
 				Move m = new Move(oFile, oRank, endFile, endRank);
-				Piece pc = parent.getCurrentPosition().getPiece(oFile, oRank);
 				if ((pc.type == PieceType.PAWN) && ((pc.isWhite && endRank == 7) || !pc.isWhite && endRank == 0)){
 					m.promotion = PieceType.QUEEN;
 				}

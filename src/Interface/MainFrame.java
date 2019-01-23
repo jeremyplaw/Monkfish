@@ -23,13 +23,20 @@ public class MainFrame extends JFrame implements KeyListener {
 	private JLabel evalLabel = new JLabel("Evaluation: "); 
 	
 	private int mode = HvH;
-	private static final int
+	public static final int
 		HvH = 1,
 		HvC = 2,
 		CvH = 3,
 		CvC = 4;
 	
-	public static void main(String[] args) { new MainFrame(); }
+	private OpeningBook book;
+	
+	public static void main(String[] args) {
+		
+		System.out.println((new Position(Position.PosType.INIT)).getFen());
+		
+		new MainFrame();
+	}
 	
 	public MainFrame() {
 		setLayout(new BorderLayout());
@@ -42,6 +49,11 @@ public class MainFrame extends JFrame implements KeyListener {
 		
 		gameTree = new PositionTree(new Position(PosType.INIT));
 		updateOutput();
+		
+		
+		book = new OpeningBook();
+		//TODO book = new OpeningBook("books/TestBook.csv");
+		
 		
 		setMinimumSize(new Dimension(MIN_W,MIN_H));
 		pack();
@@ -164,7 +176,12 @@ public class MainFrame extends JFrame implements KeyListener {
 		return gameTree.position;
 	}
 	
+	public int getMode() {
+		return mode;
+	}
+	
 	public void makeMove(Move m) {
+		
 		PositionTree newTree = new PositionTree(new Position(gameTree.position).makeMove(m));
 		gameTree.addChild(newTree, m);
 		gameTree = newTree;
@@ -260,20 +277,34 @@ public class MainFrame extends JFrame implements KeyListener {
 	
 	//================= Debug bit =========
 	
+	
 	private void think() {
-		System.out.println();
-		PositionTree pt = new PositionTree(gameTree.position,3);
 		
-		System.out.println(pt.position);
-		System.out.println("children: " + pt.getChildCount());
-		pt.evaluate();
-		System.out.println("Analysis:");
-		for (String str: pt.allPvs()) {
-			System.out.println(str);
+		if (book.contains(gameTree.position)) {			
+			System.out.println("in book!");
+			makeMove(book.getMove(gameTree.position));
+			repaint();
+		} else {
+			new Thread( new Runnable() {
+				
+				public void run() {
+					System.out.println();
+					PositionTree pt = new PositionTree(gameTree.position,3);
+					
+					System.out.println(pt.position);
+					System.out.println("children: " + pt.getChildCount());
+					pt.evaluate();
+					System.out.println("Analysis:");
+					for (String str: pt.allPvs()) {
+						System.out.println(str);
+					}
+					//JOptionPane.showMessageDialog(board, pt.topMove().toString(pt.position));
+					
+					Move topMove = pt.topMove();
+					if (topMove != null) makeMove(topMove);
+					repaint();
+				}
+			}).start();
 		}
-		//JOptionPane.showMessageDialog(board, pt.topMove().toString(pt.position));
-		
-		makeMove(pt.topMove());
-		repaint();
 	}
 }
