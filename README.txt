@@ -31,16 +31,15 @@ Search:
 - other pruning/extending heutristics?
 
 Longer term ideas:
-- opening book
+- csv import of opening book
 - endgame tablebases?
 - clock management
 
 GUI improvements:
 - Highlight last move
-- Running the engine in a separate thread
 - Clock
 - Export to pgn
-- variations
+- Variations
 - Score graph
-
+- Show when thinking
 

@@ -332,7 +332,6 @@ public class Position {
 		}
 		
 		str = str + "-------------------";
-		
 		str = str + "  Raw Evaluation = " + rawEval();
 		
 		return str;
@@ -403,5 +402,41 @@ public class Position {
 		return board[file][rank];
 	}
 	
+	
+	// https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+	// for the moment, doesn't include castling, EP rights, or move counters
+	public String getFen() {
+		
+		String fen = "";
+		
+		for (int ii=7;ii>-1;ii--) {
+			int blankCounter = 0;
+			for (int jj=0;jj<8;jj++) {
+				
+				String pcCode = board[jj][ii].toString();
+				if (pcCode == ".") {
+					blankCounter++;
+					if (jj == 7) {
+						fen = fen + blankCounter;
+						blankCounter = 0;
+					}
+				} else {
+					if (blankCounter > 0) {
+						fen = fen + blankCounter;
+						blankCounter = 0;
+					}
+					fen = fen + pcCode;
+				}
+				
+			}
+			fen = fen +"/";
+		}
+		
+		fen = fen.substring(0, fen.length()-1); //chop off last trailing "/"
+		fen = fen + " " + (whiteToMove ? "w" : "b"); // add side to move code
+		
+		return fen;
+	}
+
 }
 
