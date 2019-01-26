@@ -51,8 +51,8 @@ public class MainFrame extends JFrame implements KeyListener {
 		updateOutput();
 		
 		
-		book = new OpeningBook();
-		//TODO book = new OpeningBook("books/TestBook.csv");
+		//book = new OpeningBook();
+		book = new OpeningBook("books/TestBook.csv");
 		
 		
 		setMinimumSize(new Dimension(MIN_W,MIN_H));
@@ -280,9 +280,10 @@ public class MainFrame extends JFrame implements KeyListener {
 	
 	private void think() {
 		
-		if (book.contains(gameTree.position)) {			
-			System.out.println("in book!");
-			makeMove(book.getMove(gameTree.position));
+		if (book.contains(gameTree.position)) {
+			Move mv = book.getMove(gameTree.position);
+			System.out.println("In book! Played: " + mv);
+			makeMove(mv);
 			repaint();
 		} else {
 			new Thread( new Runnable() {

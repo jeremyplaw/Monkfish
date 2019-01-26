@@ -3,7 +3,7 @@ Monkfish is a toy  chess engine, written in Java, with a simple GUI.
 
 The engine itself uses a simple 3 ply minimax search, and leaves are evaluated using piece values + a simple mobility modifier (or number of moves to forced mate)
 
-It doesn't know that Castling out of/through check is illegal, and it doesn't know you can promote to things that aren't Queens.
+It doesn't know that castling through check is illegal, and it doesn't know you can promote to things that aren't Queens.
 
 In other words, it is a very bad engine.
 
@@ -25,21 +25,21 @@ Eval function:
 
 Search:
 - Alpha beta pruning
+- Iteratively deepening search with updates to console
 - A transposition table table
 - Search extensions: check, captures, etc.
 - Late move reductions
 - other pruning/extending heutristics?
 
 Longer term ideas:
-- csv import of opening book
+- improve opening book
 - endgame tablebases?
 - clock management
 
 GUI improvements:
 - Highlight last move
-- Clock
-- Export to pgn
-- Variations
-- Score graph
 - Show when thinking
-
+- Export to pgn
+- Score graph
+- Clock
+- Variations

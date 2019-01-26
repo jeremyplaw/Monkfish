@@ -1,6 +1,7 @@
 package Interface;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class OpeningBook {
 		
 	}
 	
-	//Loads from classpath
+	//Loads csv containing opening book from classpath
 	public OpeningBook(String bookpath) {
 		
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream(bookpath);
@@ -38,38 +39,44 @@ public class OpeningBook {
 		
 		try {
 			while ((line = reader.readLine()) != null) {
-	
+				
+				System.out.println(line);
+				
 	            String[] vals = line.split(","); // parse comma separated value line
-	            
 	            //String fen = vals[0]; first comment field not used , just for human readability of the file.
-	            String fen = vals[1];
 	            
-	            Policy pol = new Policy();
-	            
-	            for (int ii=2;ii<vals.length;ii+=2) {
-	            	
-	            	double prob = Double.valueOf(vals[ii]); 
-	            	String moveStr = vals[ii+1];
-	            	
-	            	moveStr = moveStr.replace("-", "").replace(" ", ""); // converts "e1-e3" or "d2 d4" or "g1f3"
-	            	
-	            	moveStr = moveStr.replace("a", "1").replace("b", "2").replace("c", "3").replace("d", "4").
-	            			replace("e", "5").replace("f", "6").replace("g", "7").replace("h", "8"); //convert letters to numbers
-	            	
-	            	Move mv = new Move(
-	            			Integer.valueOf(moveStr.substring(0,1))-1, //startfile
-	            			8-Integer.valueOf(moveStr.substring(1,2)), //startrank
-	            			Integer.valueOf(moveStr.substring(2,3))-1, //endfile
-	            			8-Integer.valueOf(moveStr.substring(3,4)) //endrank
-	            	);
-	            	
-	            	pol.add(mv, prob);
-	            	
+	            if (vals.length > 1) {
+	            	String fen = vals[1];
+	            	Policy pol = parseLine(vals);
+	            	book.put(fen, pol);
 	            }
 			}
-			
-		} catch (Exception e) { }
-			
+		} catch (IOException e) { }
+	}
+	
+	private Policy parseLine(String[] vals) {
+
+        Policy pol = new Policy();
+        
+        for (int ii=2;ii<vals.length;ii+=2) {
+        	
+        	double prob = Double.valueOf(vals[ii+1]); 
+        	String moveStr = vals[ii];
+        	moveStr = moveStr.replace("-", "").replace(" ", ""); // converts "e1-e3" or "d2 d4" or "g1f3"
+        	moveStr = moveStr.replace("a", "1").replace("b", "2").replace("c", "3").replace("d", "4").
+        			replace("e", "5").replace("f", "6").replace("g", "7").replace("h", "8"); //convert letters to numbers
+        	
+        	Move mv = new Move(
+        			Integer.valueOf(moveStr.substring(0,1))-1, //startfile
+        			Integer.valueOf(moveStr.substring(1,2))-1, //startrank
+        			Integer.valueOf(moveStr.substring(2,3))-1, //endfile
+        			Integer.valueOf(moveStr.substring(3,4))-1 //endrank
+        	);
+        	
+        	pol.add(mv, prob);
+        }
+        
+		return pol;
 	}
 	
 	public boolean contains(Position position) {
