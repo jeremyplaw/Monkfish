@@ -158,14 +158,12 @@ public class MainFrame extends JFrame implements KeyListener {
 		group.add(rbmenuItem);
 		
 		gameMenu.addSeparator();
-		menuItem = new JMenuItem("Computer plays next 10 moves");
-		menuItem.addActionListener(new ActionListener() {
+		rbmenuItem = new JRadioButtonMenuItem("Computer plays both");
+		rbmenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				for (int x = 0; x < 10 ; x++) {
-					think();
-				}
+				mode = CvC;
 		}});
-		modeMenu.add(menuItem);
+		modeMenu.add(rbmenuItem);
 		
 		menuBar.add(modeMenu);
 		
@@ -174,6 +172,10 @@ public class MainFrame extends JFrame implements KeyListener {
 	
 	public Position getCurrentPosition() {
 		return gameTree.position;
+	}
+	
+	public Move getLastMove() {
+		return gameTree.getLastMove();
 	}
 	
 	public int getMode() {
@@ -188,7 +190,8 @@ public class MainFrame extends JFrame implements KeyListener {
 		updateOutput();
 		
 		if ((mode == HvC && !gameTree.position.whiteToMove) ||
-				(mode == CvH && gameTree.position.whiteToMove)) {
+				(mode == CvH && gameTree.position.whiteToMove) ||
+				(mode == CvC)) {
 			repaint();
 			think();
 		}

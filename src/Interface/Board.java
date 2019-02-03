@@ -132,7 +132,7 @@ public class Board extends JPanel implements FocusListener { private static fina
 				}
 			}
 			
-			//highlight highlighted squares
+			//highlight highlighted squares (possible move squares)
 			g2d.setColor(Color.YELLOW);
 			for (int ii = 0; ii < 8; ii++) {
 				for (int jj = 0; jj < 8; jj++) {
@@ -140,6 +140,20 @@ public class Board extends JPanel implements FocusListener { private static fina
 						g2d.fillRect(ii * size / 8, jj * size / 8,
 								size / 8, size / 8);
 				}
+			}
+			
+			//highlight last move
+			g2d.setColor(Color.PINK);
+			if (parent.getLastMove() != null) {
+				int sf = parent.getLastMove().getStartFile();
+				int ef = parent.getLastMove().getEndFile();
+				int sr = parent.getLastMove().getStartRank();
+				int er = parent.getLastMove().getEndRank();
+				
+				g2d.fillRect(sf * size / 8, (7 - sr) * size / 8,
+						size / 8, size / 8);
+				g2d.fillRect(ef * size / 8, (7 - er) * size / 8,
+						size / 8, size / 8);
 			}
 			
 			//draw gridlines
